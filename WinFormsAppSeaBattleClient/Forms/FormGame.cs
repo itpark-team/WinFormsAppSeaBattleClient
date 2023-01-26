@@ -19,6 +19,8 @@ namespace WinFormsAppSeaBattleClient.Forms
     public partial class FormGame : Form
     {
         private ClientEngine _clientEngine;
+        private FieldsManager _fieldsManager;
+        private PictureboxesManager _pictureboxesManager;
 
         public FormGame()
         {
@@ -28,15 +30,30 @@ namespace WinFormsAppSeaBattleClient.Forms
         private void FormGame_Load(object sender, EventArgs e)
         {
             _clientEngine = new ClientEngine("127.0.0.1", 34536);
+            _fieldsManager = new FieldsManager();
+            _pictureboxesManager = new PictureboxesManager(pictureBoxMyField, pictureBoxShootField);
         }
 
         private void buttonConnectToServer_Click(object sender, EventArgs e)
         {
             _clientEngine.ConnectToServer();
+            Response response = _clientEngine.ReceiveResponse();
+
+            int myNumber = int.Parse(response.JsonData);
 
             buttonConnectToServer.Enabled = false;
 
-            MessageBox.Show("Вы успешно подключились к серверу");
+            if (myNumber == 1)
+            {
+                MessageBox.Show("Вы успешно подключились к серверу. Вы играете за 1 игрока. Ожидаем подключение 2 игрока.....");
+            }
+            else
+            {
+                MessageBox.Show($"Вы успешно подключились к серверу. Вы играете за 2 игрока");
+            }
+
+            _clientEngine.ReceiveResponse();
+            buttonStartGame.Enabled = true;
         }
 
         private void buttonStartGame_Click(object sender, EventArgs e)
@@ -53,12 +70,16 @@ namespace WinFormsAppSeaBattleClient.Forms
             {
                 PlayerFields playerFields = JsonSerializer.Deserialize<PlayerFields>(response.JsonData);
 
-                int a = 5;
+                _fieldsManager.ReadFields(playerFields);
+
+                _pictureboxesManager.DrawFields(_fieldsManager.MyField, _fieldsManager.ShootField);
             }
             else
             {
                 MessageBox.Show("ОШИБКА!!! " + response.JsonData);
             }
+
+            buttonStartGame.Enabled = false;
         }
     }
 }

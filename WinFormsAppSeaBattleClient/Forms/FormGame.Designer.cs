@@ -50,9 +50,10 @@
             // 
             // buttonStartGame
             // 
-            this.buttonStartGame.Location = new System.Drawing.Point(197, 14);
+            this.buttonStartGame.Enabled = false;
+            this.buttonStartGame.Location = new System.Drawing.Point(197, 12);
             this.buttonStartGame.Name = "buttonStartGame";
-            this.buttonStartGame.Size = new System.Drawing.Size(179, 25);
+            this.buttonStartGame.Size = new System.Drawing.Size(179, 27);
             this.buttonStartGame.TabIndex = 1;
             this.buttonStartGame.Text = "Начать игру";
             this.buttonStartGame.UseVisualStyleBackColor = true;
@@ -63,7 +64,7 @@
             this.pictureBoxMyField.BackColor = System.Drawing.SystemColors.Window;
             this.pictureBoxMyField.Location = new System.Drawing.Point(12, 63);
             this.pictureBoxMyField.Name = "pictureBoxMyField";
-            this.pictureBoxMyField.Size = new System.Drawing.Size(250, 250);
+            this.pictureBoxMyField.Size = new System.Drawing.Size(251, 251);
             this.pictureBoxMyField.TabIndex = 2;
             this.pictureBoxMyField.TabStop = false;
             // 
@@ -72,7 +73,7 @@
             this.pictureBoxShootField.BackColor = System.Drawing.SystemColors.Window;
             this.pictureBoxShootField.Location = new System.Drawing.Point(268, 63);
             this.pictureBoxShootField.Name = "pictureBoxShootField";
-            this.pictureBoxShootField.Size = new System.Drawing.Size(250, 250);
+            this.pictureBoxShootField.Size = new System.Drawing.Size(251, 251);
             this.pictureBoxShootField.TabIndex = 3;
             this.pictureBoxShootField.TabStop = false;
             // 
