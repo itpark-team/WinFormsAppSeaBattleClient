@@ -34,6 +34,7 @@
             this.pictureBoxShootField = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.labelMyNumber = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMyField)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxShootField)).BeginInit();
             this.SuspendLayout();
@@ -76,6 +77,7 @@
             this.pictureBoxShootField.Size = new System.Drawing.Size(251, 251);
             this.pictureBoxShootField.TabIndex = 3;
             this.pictureBoxShootField.TabStop = false;
+            this.pictureBoxShootField.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBoxShootField_MouseDown);
             // 
             // label1
             // 
@@ -95,11 +97,22 @@
             this.label2.TabIndex = 5;
             this.label2.Text = "Поле другого игрока";
             // 
+            // labelMyNumber
+            // 
+            this.labelMyNumber.AutoSize = true;
+            this.labelMyNumber.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.labelMyNumber.Location = new System.Drawing.Point(376, 26);
+            this.labelMyNumber.Name = "labelMyNumber";
+            this.labelMyNumber.Size = new System.Drawing.Size(143, 13);
+            this.labelMyNumber.TabIndex = 6;
+            this.labelMyNumber.Text = "Вы играете за * игрока";
+            // 
             // FormGame
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.labelMyNumber);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pictureBoxShootField);
@@ -124,5 +137,6 @@
         private PictureBox pictureBoxShootField;
         private Label label1;
         private Label label2;
+        private Label labelMyNumber;
     }
 }

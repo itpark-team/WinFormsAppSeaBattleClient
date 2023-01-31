@@ -35,5 +35,7 @@ namespace WinFormsAppSeaBattleClient.Game
                 }
             }
         }
+
+        
     }
 }

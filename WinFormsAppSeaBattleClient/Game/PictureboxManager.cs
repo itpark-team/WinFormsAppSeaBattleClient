@@ -55,5 +55,14 @@ namespace WinFormsAppSeaBattleClient.Game
 
             _pictureBox.Image = _bitmap;
         }
+
+        public ShootCoords GetShootCoords(int x, int y)
+        {
+            return new ShootCoords()
+            {
+                I = y / _cellHeight,
+                J = x / _cellWidth
+            };
+        }
     }
 }

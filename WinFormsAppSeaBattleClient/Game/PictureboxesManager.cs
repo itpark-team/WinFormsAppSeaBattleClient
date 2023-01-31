@@ -23,5 +23,10 @@ namespace WinFormsAppSeaBattleClient.Game
             _pictureBoxManagerMyField.DrawField(myField);
             _pictureBoxManagerShootField.DrawField(shootField);
         }
+
+        public ShootCoords GetShootCoordsFromShootField(int x, int y)
+        {
+            return _pictureBoxManagerShootField.GetShootCoords(x, y);
+        }
     }
 }
