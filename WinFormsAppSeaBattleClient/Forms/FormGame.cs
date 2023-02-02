@@ -21,8 +21,115 @@ namespace WinFormsAppSeaBattleClient.Forms
         private ClientEngine _clientEngine;
         private FieldsManager _fieldsManager;
         private PictureboxesManager _pictureboxesManager;
+
         private int _myNumber;
         private bool _isMyTurn;
+
+        private void ReceiveAndDrawFields()
+        {
+            Request request = new Request()
+            {
+                Command = Commands.GetFields
+            };
+            _clientEngine.SendRequest(request);
+
+            Response response = _clientEngine.ReceiveResponse();
+
+            PlayerFields playerFields = JsonSerializer.Deserialize<PlayerFields>(response.JsonData);
+
+            _fieldsManager.ReadFields(playerFields);
+
+            _pictureboxesManager.DrawFields(_fieldsManager.MyField, _fieldsManager.ShootField);
+        }
+
+        private Response MakeShootAndGetResponse(int x, int y)
+        {
+            ShootCoords shootCoords = _pictureboxesManager.GetShootCoordsFromShootField(x, y);
+
+            Request request = new Request()
+            {
+                Command = Commands.Shoot,
+                JsonData = JsonSerializer.Serialize(shootCoords)
+            };
+
+            _clientEngine.SendRequest(request);
+
+            return _clientEngine.ReceiveResponse();
+        }
+
+        private int ReceiveMyNumber()
+        {
+
+            Response response = _clientEngine.ReceiveResponse();
+
+            return int.Parse(response.JsonData);
+        }
+
+        private string ReceiveGameResult()
+        {
+            Request request = new Request()
+            {
+                Command = Commands.GetGameResult
+            };
+
+            _clientEngine.SendRequest(request);
+
+            Response response = _clientEngine.ReceiveResponse();
+
+            return response.JsonData;
+        }
+
+        public void WaitTurnOtherPlayer()
+        {
+            bool isWait = true;
+            while (isWait)
+            {
+                ReceiveAndDrawFields();
+
+                string gameResult = ReceiveGameResult();
+
+                if (gameResult.StartsWith("Turn"))
+                {
+                    int currentTurn = int.Parse(gameResult.Remove(0, 4));
+
+                    if (currentTurn == _myNumber)
+                    {
+                        _isMyTurn = true;
+
+                        isWait=false;
+                    }
+                }
+                else if (gameResult.StartsWith("Win"))
+                {
+                    int win = int.Parse(gameResult.Remove(0, 3));
+
+                    _isMyTurn = false;
+
+                    isWait = false;
+
+                    if (win == _myNumber)
+                    {
+                        MessageBox.Show("Поздравляем вы победили!");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Вы проиграли!");
+                    }
+                }
+
+                Thread.Sleep(500);
+            }
+        }
+
+        private void ExitGame()
+        {
+            Request request = new Request()
+            {
+                Command = Commands.ExitGame
+            };
+
+            _clientEngine.SendRequest(request);
+        }
 
         public FormGame()
         {
@@ -39,9 +146,8 @@ namespace WinFormsAppSeaBattleClient.Forms
         private void buttonConnectToServer_Click(object sender, EventArgs e)
         {
             _clientEngine.ConnectToServer();
-            Response response = _clientEngine.ReceiveResponse();
 
-            _myNumber = int.Parse(response.JsonData);
+            _myNumber = ReceiveMyNumber();
 
             buttonConnectToServer.Enabled = false;
 
@@ -64,28 +170,16 @@ namespace WinFormsAppSeaBattleClient.Forms
 
         private void buttonStartGame_Click(object sender, EventArgs e)
         {
-            Request request = new Request()
-            {
-                Command = Commands.GetFields
-            };
-            _clientEngine.SendRequest(request);
-
-            Response response = _clientEngine.ReceiveResponse();
-
-            if (response.Status == Statuses.Ok)
-            {
-                PlayerFields playerFields = JsonSerializer.Deserialize<PlayerFields>(response.JsonData);
-
-                _fieldsManager.ReadFields(playerFields);
-
-                _pictureboxesManager.DrawFields(_fieldsManager.MyField, _fieldsManager.ShootField);
-            }
-            else
-            {
-                MessageBox.Show("ОШИБКА!!! " + response.JsonData);
-            }
-
+            ReceiveAndDrawFields();
             buttonStartGame.Enabled = false;
+
+            if (_myNumber == 2)
+            {
+                Task.Run(() =>
+                {
+                    WaitTurnOtherPlayer();
+                });
+            }
         }
 
         private void pictureBoxShootField_MouseDown(object sender, MouseEventArgs e)
@@ -96,39 +190,53 @@ namespace WinFormsAppSeaBattleClient.Forms
                 return;
             }
 
-            ShootCoords shootCoords = _pictureboxesManager.GetShootCoordsFromShootField(e.X, e.Y);
-
-            Request request = new Request()
-            {
-                Command = Commands.Shoot,
-                JsonData = JsonSerializer.Serialize(shootCoords)
-            };
-
-            _clientEngine.SendRequest(request);
-            Response response = _clientEngine.ReceiveResponse();
+            Response response = MakeShootAndGetResponse(e.X, e.Y);
 
             if (response.Status == Statuses.Ok)
             {
-                request = new Request()
+                ReceiveAndDrawFields();
+                string gameResult = ReceiveGameResult();
+
+                if (gameResult.StartsWith("Turn"))
                 {
-                    Command = Commands.GetFields
-                };
+                    int currentTurn = int.Parse(gameResult.Remove(0, 4));
 
-                _clientEngine.SendRequest(request);
-                response = _clientEngine.ReceiveResponse();
+                    if (currentTurn != _myNumber)
+                    {
+                        _isMyTurn = false;
 
-                PlayerFields playerFields = JsonSerializer.Deserialize<PlayerFields>(response.JsonData);
+                        Task.Run(() =>
+                        {
+                            WaitTurnOtherPlayer();
+                        });
+                    }
+                } 
+                else if (gameResult.StartsWith("Win"))
+                {
+                    int win = int.Parse(gameResult.Remove(0, 3));
 
-                _fieldsManager.ReadFields(playerFields);
+                    _isMyTurn = false;
 
-                _pictureboxesManager.DrawFields(_fieldsManager.MyField, _fieldsManager.ShootField);
+                    if(win == _myNumber)
+                    {
+                        MessageBox.Show("Поздравляем вы победили!");
+                    }
+                }
 
             }
-            else if(response.Status == Statuses.Error)
+            else if (response.Status == Statuses.Error)
             {
                 MessageBox.Show(response.JsonData);
             }
 
+        }
+
+        private void buttonExitGame_Click(object sender, EventArgs e)
+        {
+            ExitGame();
+            _clientEngine.CloseClientSocket();
+
+            Application.Exit();
         }
     }
 }

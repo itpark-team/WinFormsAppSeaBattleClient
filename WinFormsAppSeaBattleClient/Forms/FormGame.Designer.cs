@@ -35,6 +35,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.labelMyNumber = new System.Windows.Forms.Label();
+            this.buttonExitGame = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMyField)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxShootField)).BeginInit();
             this.SuspendLayout();
@@ -107,11 +108,22 @@
             this.labelMyNumber.TabIndex = 6;
             this.labelMyNumber.Text = "Вы играете за * игрока";
             // 
+            // buttonExitGame
+            // 
+            this.buttonExitGame.Location = new System.Drawing.Point(12, 320);
+            this.buttonExitGame.Name = "buttonExitGame";
+            this.buttonExitGame.Size = new System.Drawing.Size(179, 27);
+            this.buttonExitGame.TabIndex = 7;
+            this.buttonExitGame.Text = "Выйти из игры";
+            this.buttonExitGame.UseVisualStyleBackColor = true;
+            this.buttonExitGame.Click += new System.EventHandler(this.buttonExitGame_Click);
+            // 
             // FormGame
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.buttonExitGame);
             this.Controls.Add(this.labelMyNumber);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -138,5 +150,6 @@
         private Label label1;
         private Label label2;
         private Label labelMyNumber;
+        private Button buttonExitGame;
     }
 }

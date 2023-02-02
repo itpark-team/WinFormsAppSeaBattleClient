@@ -49,6 +49,13 @@ namespace WinFormsAppSeaBattleClient.Net
             LogUtils.Log($"MESSAGE TO SERVER SENT: {request}");
         }
 
+        public void CloseClientSocket()
+        {
+            _clientSocket.Shutdown(SocketShutdown.Both);
+            _clientSocket.Close();
+
+            LogUtils.Log($"CLIENT FINISHED");
+        }
 
     }
 }

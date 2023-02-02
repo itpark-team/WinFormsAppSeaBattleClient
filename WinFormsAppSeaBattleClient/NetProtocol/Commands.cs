@@ -11,5 +11,9 @@ namespace WinFormsAppSeaBattleClient.NetProtocol
     {
         public static string GetFields { get; } = "GetFields";
         public static string Shoot { get; } = "Shoot";
+
+        public static string GetGameResult { get; } = "GetGameResult";
+
+        public static string ExitGame { get; } = "ExitGame";
     }
 }
