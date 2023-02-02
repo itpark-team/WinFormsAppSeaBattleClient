@@ -9,9 +9,9 @@ namespace WinFormsAppSeaBattleClient.Utils
 {
     internal class SocketUtils
     {
-        public static void SendMessage(Socket clientSocket, string messageToClient)
+        public static void SendMessage(Socket clientSocket, string messageToServer)
         {
-            byte[] outputBytes = Encoding.Unicode.GetBytes(messageToClient);
+            byte[] outputBytes = Encoding.Unicode.GetBytes(messageToServer);
             clientSocket.Send(outputBytes);
         }
 
@@ -25,9 +25,9 @@ namespace WinFormsAppSeaBattleClient.Utils
                 messageBuilder.Append(Encoding.Unicode.GetString(inputBytes, 0, countBytes));
             } while (clientSocket.Available > 0);
 
-            string messageFromClient = messageBuilder.ToString();
+            string messageFromServer = messageBuilder.ToString();
 
-            return messageFromClient;
+            return messageFromServer;
         }
 
     }

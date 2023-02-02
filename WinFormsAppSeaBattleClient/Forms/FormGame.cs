@@ -10,7 +10,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using WinFormsAppSeaBattleClient.Game;
+using WinFormsAppSeaBattleClient.NetModel;
 using WinFormsAppSeaBattleClient.Net;
 using WinFormsAppSeaBattleClient.NetProtocol;
 
@@ -59,7 +59,6 @@ namespace WinFormsAppSeaBattleClient.Forms
 
         private int ReceiveMyNumber()
         {
-
             Response response = _clientEngine.ReceiveResponse();
 
             return int.Parse(response.JsonData);
@@ -77,6 +76,16 @@ namespace WinFormsAppSeaBattleClient.Forms
             Response response = _clientEngine.ReceiveResponse();
 
             return response.JsonData;
+        }
+
+        private void ExitGame()
+        {
+            Request request = new Request()
+            {
+                Command = Commands.ExitGame
+            };
+
+            _clientEngine.SendRequest(request);
         }
 
         public void WaitTurnOtherPlayer()
@@ -107,29 +116,14 @@ namespace WinFormsAppSeaBattleClient.Forms
 
                     isWait = false;
 
-                    if (win == _myNumber)
-                    {
-                        MessageBox.Show("Поздравляем вы победили!");
-                    }
-                    else
-                    {
-                        MessageBox.Show("Вы проиграли!");
-                    }
+                    MessageBox.Show("Вы проиграли!");
                 }
 
                 Thread.Sleep(500);
             }
         }
 
-        private void ExitGame()
-        {
-            Request request = new Request()
-            {
-                Command = Commands.ExitGame
-            };
-
-            _clientEngine.SendRequest(request);
-        }
+       
 
         public FormGame()
         {
@@ -165,6 +159,9 @@ namespace WinFormsAppSeaBattleClient.Forms
             labelMyNumber.Text = $"Вы играете за {_myNumber} игрока";
 
             _clientEngine.ReceiveResponse();
+
+            MessageBox.Show("Игроки успешно подключены");
+
             buttonStartGame.Enabled = true;
         }
 
@@ -217,10 +214,7 @@ namespace WinFormsAppSeaBattleClient.Forms
 
                     _isMyTurn = false;
 
-                    if(win == _myNumber)
-                    {
-                        MessageBox.Show("Поздравляем вы победили!");
-                    }
+                    MessageBox.Show("Поздравляем вы победили!");
                 }
 
             }

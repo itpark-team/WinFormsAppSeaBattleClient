@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WinFormsAppSeaBattleClient.Game
+namespace WinFormsAppSeaBattleClient.NetModel
 {
     internal class PlayerFields
     {
